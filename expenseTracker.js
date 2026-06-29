@@ -31,3 +31,54 @@ function updateThemeUI(theme) {
 const currentTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", currentTheme);
 updateThemeUI(currentTheme);
+
+// Handle form submission
+actionBtn.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    const desc = descriptionInput.value.trim();
+    const amount = Number(amountInput.value);
+    const type = typeInput.value;
+
+    if (!desc || !amount) {
+        alert("Please enter both description and amount");
+        return;
+    }
+
+    if (editId !== null) {
+        // Edit mode: find and update transaction
+        for (let i = 0; i < transactions.length; i++) {
+            if (transactions[i].userId === editId) {
+                transactions[i].Description = desc;
+                transactions[i].Amount = amount;
+                transactions[i].Type = type;
+            }
+        }
+        editId = null;
+        actionBtn.textContent = "Add Transaction";
+    } else {
+        // Add mode: calculate next ID and append
+        let newId = 1;
+        if (transactions.length > 0) {
+            let maxId = 0;
+            for (let i = 0; i < transactions.length; i++) {
+                if (transactions[i].userId > maxId) {
+                    maxId = transactions[i].userId;
+                }
+            }
+            newId = maxId + 1;
+        }
+
+        const newTx = {
+            userId: newId,
+            Description: desc,
+            Amount: amount,
+            Type: type
+        };
+        transactions.push(newTx);
+    }
+
+    localStorage.setItem("users", JSON.stringify(transactions));
+    clearForm();
+    render();
+});
