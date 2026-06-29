@@ -27,3 +27,7 @@ function updateThemeUI(theme) {
         themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i> <span>Dark Mode</span>';
     }
 }
+// Initialize theme on load
+const currentTheme = localStorage.getItem("theme") || "light";
+document.documentElement.setAttribute("data-theme", currentTheme);
+updateThemeUI(currentTheme);
