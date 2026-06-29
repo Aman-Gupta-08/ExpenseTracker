@@ -176,3 +176,23 @@ function deleteUser(id) {
 
     render();
 }
+
+// Start editing a transaction
+function updateUser(id) {
+    let found = null;
+    for (let i = 0; i < transactions.length; i++) {
+        if (transactions[i].userId === id) {
+            found = transactions[i];
+        }
+    }
+    if (found) {
+        descriptionInput.value = found.Description;
+        amountInput.value = found.Amount;
+        typeInput.value = found.Type;
+        editId = id;
+        actionBtn.textContent = "Update Transaction";
+    }
+}
+
+// Initial render
+render();
