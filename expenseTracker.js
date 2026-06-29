@@ -155,3 +155,24 @@ function clearForm() {
     amountInput.value = "";
     typeInput.selectedIndex = 0;
 }
+
+// Delete transaction
+function deleteUser(id) {
+    let updated = [];
+    for (let i = 0; i < transactions.length; i++) {
+        if (transactions[i].userId !== id) {
+            updated.push(transactions[i]);
+        }
+    }
+    transactions = updated;
+    localStorage.setItem("users", JSON.stringify(transactions));
+
+    // Reset edit state if deleting active edited item
+    if (editId === id) {
+        editId = null;
+        actionBtn.textContent = "Add Transaction";
+        clearForm();
+    }
+
+    render();
+}
