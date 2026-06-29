@@ -82,3 +82,76 @@ actionBtn.addEventListener("click", function (event) {
     clearForm();
     render();
 });
+
+// Render list and update metrics
+function render() {
+    listContainer.innerHTML = "";
+
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    if (transactions.length === 0) {
+        listContainer.innerHTML = '<div class="text-center text-muted py-4">No transactions found.</div>';
+    }
+
+    for (let i = 0; i < transactions.length; i++) {
+        const tx = transactions[i];
+
+        if (tx.Type === "Expense") {
+            totalExpense += Number(tx.Amount);
+        } else {
+            totalIncome += Number(tx.Amount);
+        }
+
+        const isExpense = tx.Type === "Expense";
+        const icon = isExpense ? "fa-arrow-up" : "fa-arrow-down";
+        const iconClass = isExpense ? "expense-icon" : "income-icon";
+        const amountSign = isExpense ? "-" : "+";
+        const textClass = isExpense ? "text-danger" : "text-success";
+
+        const item = document.createElement("div");
+        item.className = "transaction-item";
+        item.innerHTML = `
+            <div class="transaction-left">
+                <div class="transaction-icon ${iconClass}">
+                    <i class="fa-solid ${icon}"></i>
+                </div>
+                <div class="transaction-details">
+                    <h6>${tx.Description}</h6>
+                    <p>${tx.Type}</p>
+                </div>
+            </div>
+            <div class="transaction-right">
+                <div class="transaction-amount ${textClass}">
+                    ${amountSign} ₹${tx.Amount}
+                </div>
+                <div>
+                    <button class="btn-action edit" onclick="updateUser(${tx.userId})" title="Edit">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="btn-action delete" onclick="deleteUser(${tx.userId})" title="Delete">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        listContainer.appendChild(item);
+    }
+
+    const balance = totalIncome - totalExpense;
+    incomeEl.textContent = "₹" + totalIncome;
+    expenseEl.textContent = "₹" + totalExpense;
+
+    if (balance < 0) {
+        balanceEl.className = "text-danger fw-bold";
+    } else {
+        balanceEl.className = "text-primary fw-bold";
+    }
+    balanceEl.textContent = "₹" + balance;
+}
+
+function clearForm() {
+    descriptionInput.value = "";
+    amountInput.value = "";
+    typeInput.selectedIndex = 0;
+}
